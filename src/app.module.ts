@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
@@ -11,6 +13,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
   imports: [
     // Distributed tracing, auto-correlated logs, request/job metrics, error
     // telemetry, alarms, and more — out of the box. Sign up at https://observe.nestjs.com
+    ConfigModule.forRoot({ isGlobal: true }),
     ObserveModule.forRoot({
       runtimeMetrics: true,
       runtimeMetricsInterval: 60000,
@@ -18,6 +21,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       appSecret: process.env.OBSERVE_APP_SECRET ?? '',
       serviceId: 'nest-lms',
     }),
+    MongooseModule.forRoot(process.env.DB_URL as string),
     AuthModule,
     UserModule,
   ],

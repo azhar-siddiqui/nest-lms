@@ -1,6 +1,7 @@
-import { PasswordHasher } from '@nestjs/authentication';
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service.js';
+import { CredentialsService } from './credentials.service.js';
 import { CreateAuthDto } from './dto/create-auth.dto.js';
 import { UpdateAuthDto } from './dto/update-auth.dto.js';
 
@@ -8,18 +9,25 @@ import { UpdateAuthDto } from './dto/update-auth.dto.js';
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly passwordHasher: PasswordHasher,
+    private readonly credentialsService: CredentialsService,
+    private jwtService: JwtService,
   ) {}
 
   async create(createAuthDto: CreateAuthDto) {
-    const hashedPassword = await this.passwordHasher.hash(
+    const hashedPassword = await this.credentialsService.hashPassword(
       createAuthDto.password,
     );
 
-    return this.userService.createUser({
+    const user = await this.userService.createUser({
       ...createAuthDto,
       password: hashedPassword,
     });
+
+    const payload = { sub: user.id, email: user.email, role: user.role };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
   findAll() {
