@@ -48,18 +48,18 @@ export class AuthController {
     return await this.authService.findUser(id);
   }
 
-  @Get(':id')
-  @UseGuards(AuthGuard)
-  @HttpCode(200)
-  async findUser(@Param('id') id: string) {
-    return await this.authService.findUser(id);
-  }
-
   @Get('sign-out')
   @UseGuards(AuthGuard)
   @HttpCode(200)
   async signOut() {
     return await this.authService.signOut();
+  }
+
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  async findUser(@Param('id') id: string) {
+    return await this.authService.findUser(id);
   }
 
   @Patch(':id')
