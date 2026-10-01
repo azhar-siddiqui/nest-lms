@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { UserModule } from '../user/user.module.js';
 import { AuthController } from './auth.controller.js';
+import { AuthGuard } from './auth.guard.js';
 import { AuthService } from './auth.service.js';
 import { jwtConstants } from './constants.js';
 import { CredentialsService } from './credentials.service.js';
@@ -11,7 +12,9 @@ import { JwtStrategy } from './jwt.strategy.js';
 
 @Module({
   imports: [
-    AuthenticationModule.forRoot({}),
+    AuthenticationModule.forRoot({
+      globalGuard: false,
+    }),
     UserModule,
     PassportModule,
     JwtModule.register({
@@ -21,7 +24,7 @@ import { JwtStrategy } from './jwt.strategy.js';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, CredentialsService, JwtStrategy],
-  exports: [CredentialsService],
+  providers: [AuthService, CredentialsService, JwtStrategy, AuthGuard],
+  exports: [CredentialsService, AuthGuard],
 })
 export class AuthModule {}

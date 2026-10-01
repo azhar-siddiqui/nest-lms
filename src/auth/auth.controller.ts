@@ -1,4 +1,3 @@
-import { Public } from '@nestjs/authentication';
 import {
   Body,
   Controller,
@@ -7,9 +6,11 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto.js';
 import { LoginUserDto } from '../user/dto/login-user.dto.js';
+import { AuthGuard } from './auth.guard.js';
 import { AuthService } from './auth.service.js';
 import { UpdateAuthDto } from './dto/update-auth.dto.js';
 
@@ -17,7 +18,7 @@ import { UpdateAuthDto } from './dto/update-auth.dto.js';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Public()
+  // @Public()
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     const token = await this.authService.registerUser(createUserDto);
@@ -25,13 +26,14 @@ export class AuthController {
     return token;
   }
 
-  @Public()
+  // @Public()
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto) {
     return await this.authService.loginUser(loginUserDto);
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   findOne(@Param('id') id: string) {
     return this.authService.findOne(id);
   }
