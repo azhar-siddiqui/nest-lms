@@ -63,15 +63,15 @@ export class AuthService {
     return `This action returns all auth`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  findOne(id: string) {
+    return `This action returns a ${id} auth`;
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  update(id: string, updateAuthDto: UpdateAuthDto) {
+    return `This action updates a ${id} auth`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  remove(id: string) {
+    return `This action removes a ${id} auth`;
   }
 }
