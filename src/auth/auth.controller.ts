@@ -7,6 +7,8 @@ import {
   Param,
   Patch,
   Post,
+  Request,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto.js';
@@ -34,11 +36,30 @@ export class AuthController {
     return await this.authService.loginUser(loginUserDto);
   }
 
+  @Get('profile')
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  async findUserProfile(@Request() req: any) {
+    const id = req.user?.sub;
+    if (!id) {
+      throw new UnauthorizedException('User ID not found in request');
+    }
+
+    return await this.authService.findUser(id);
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
   async findUser(@Param('id') id: string) {
     return await this.authService.findUser(id);
+  }
+
+  @Get('sign-out')
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  async signOut() {
+    return await this.authService.signOut();
   }
 
   @Patch(':id')

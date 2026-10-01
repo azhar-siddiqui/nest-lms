@@ -83,6 +83,11 @@ export class AuthService {
     return user;
   }
 
+  async signOut() {
+    // Implement sign-out logic if needed (e.g., token invalidation)
+    return { message: 'User signed out successfully' };
+  }
+
   findAll() {
     return `This action returns all auth`;
   }
