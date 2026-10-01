@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -28,14 +29,16 @@ export class AuthController {
 
   // @Public()
   @Post('login')
+  @HttpCode(200)
   async login(@Body() loginUserDto: LoginUserDto) {
     return await this.authService.loginUser(loginUserDto);
   }
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(id);
+  @HttpCode(200)
+  async findUser(@Param('id') id: string) {
+    return await this.authService.findUser(id);
   }
 
   @Patch(':id')

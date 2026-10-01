@@ -18,7 +18,7 @@ export class UserService {
     return user;
   }
 
-  async findOne(id: number): Promise<User | null> {
-    return await this.userModel.findById(id).exec();
+  async findUser(id: string): Promise<User | null> {
+    return await this.userModel.findById(id).select('-password').exec();
   }
 }

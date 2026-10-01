@@ -1,5 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Types } from 'mongoose';
 import { CreateUserDto } from '../user/dto/create-user.dto.js';
 import { LoginUserDto } from '../user/dto/login-user.dto.js';
 import { UserService } from '../user/user.service.js';
@@ -11,7 +17,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly credentialsService: CredentialsService,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async registerUser(createAuthDto: CreateUserDto) {
@@ -59,12 +65,26 @@ export class AuthService {
     };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async findUser(id: string) {
+    // 1. Optional: Check if the ID string matches a valid Mongoose format first
+    // (Prevents MongoDB from throwing a 500 "CastError" for malformed strings)
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException(`The ID "${id}" is not in a valid format.`);
+    }
+
+    // 2. Fetch the user from the service
+    const user = await this.userService.findUser(id);
+
+    // 3. Check if the user exists
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found.`);
+    }
+
+    return user;
   }
 
-  findOne(id: string) {
-    return `This action returns a ${id} auth`;
+  findAll() {
+    return `This action returns all auth`;
   }
 
   update(id: string, updateAuthDto: UpdateAuthDto) {
