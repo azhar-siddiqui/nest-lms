@@ -8,8 +8,9 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { CreateUserDto } from '../user/dto/create-user.dto.js';
+import { LoginUserDto } from '../user/dto/login-user.dto.js';
 import { AuthService } from './auth.service.js';
-import { CreateAuthDto } from './dto/create-auth.dto.js';
 import { UpdateAuthDto } from './dto/update-auth.dto.js';
 
 @Controller('auth')
@@ -18,8 +19,16 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  async register(@Body() createUserDto: CreateUserDto) {
+    const token = await this.authService.registerUser(createUserDto);
+
+    return token;
+  }
+
+  @Public()
+  @Post('login')
+  async login(@Body() loginUserDto: LoginUserDto) {
+    return await this.authService.loginUser(loginUserDto);
   }
 
   @Get()

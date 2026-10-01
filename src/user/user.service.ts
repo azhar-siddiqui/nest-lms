@@ -1,15 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateAuthDto } from '../auth/dto/create-auth.dto.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
 import { User } from './schemas/user.schema.js';
 
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async createUser(createAuthDto: CreateAuthDto) {
-    const user = await this.userModel.create(createAuthDto);
+  async registerUser(createUserDto: CreateUserDto) {
+    const user = await this.userModel.create(createUserDto);
     return user;
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await this.userModel.findOne({ email }).exec();
+    return user;
+  }
+
+  async findOne(id: number): Promise<User | null> {
+    return await this.userModel.findById(id).exec();
   }
 }

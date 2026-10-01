@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { UserRole } from '../enums/user-role.enum.js';
 
 export type UserDocument = HydratedDocument<User>;
@@ -9,6 +9,8 @@ export type UserDocument = HydratedDocument<User>;
   versionKey: false, // Optional: hides the __v field
 })
 export class User {
+  _id!: Types.ObjectId;
+
   @Prop({
     required: true,
     trim: true,
