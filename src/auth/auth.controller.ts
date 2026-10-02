@@ -11,6 +11,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { CreateUserDto } from '../user/dto/create-user.dto.js';
 import { LoginUserDto } from '../user/dto/login-user.dto.js';
 import { AuthGuard } from './auth.guard.js';
@@ -37,6 +38,7 @@ export class AuthController {
   }
 
   @Get('profile')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(200)
   async findUserProfile(@Request() req: any) {
@@ -49,6 +51,7 @@ export class AuthController {
   }
 
   @Get('sign-out')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(200)
   async signOut() {
@@ -56,6 +59,7 @@ export class AuthController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(200)
   async findUser(@Param('id') id: string) {

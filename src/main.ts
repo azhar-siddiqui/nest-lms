@@ -14,14 +14,27 @@ async function bootstrap() {
     .setTitle('My Awesome API')
     .setDescription('The API description for my project')
     .setVersion('1.0')
-    .addBearerAuth() // Adds JWT authorization button to Swagger UI
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description:
+          'Paste the access_token value only. Swagger adds the Bearer prefix.',
+      },
+      'bearer',
+    )
     .build();
 
   // 2. Wrap document creation in a factory function (lazy generation)
   const documentFactory = () => SwaggerModule.createDocument(app, config);
 
   // 3. Mount Swagger UI on the '/api/docs' route
-  SwaggerModule.setup('api/docs', app, documentFactory);
+  SwaggerModule.setup('api/docs', app, documentFactory, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new MongoExceptionFilter());
